@@ -1,0 +1,12 @@
+# 忽略下载视频文件夹
+下载视频/
+.venv/
+/下载视频/
+*.mp4
+instagram_video/
+下载视频2/
+tesseract-5.4.1/
+venv/
+数据集/
+测试/
+batches/
