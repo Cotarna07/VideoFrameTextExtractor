@@ -67,8 +67,8 @@ def detect_folder_language(folder_path):
     text_files = []
     logic_used = ""  # 保存使用的判断逻辑
 
-    # 支持的语言列表
-    supported_languages = ["en", "ar", "es", "pt"]
+    # 支持的语言列表，英语优先级最低
+    supported_languages = ["ar", "es", "pt", "en"]
 
     # 遍历文件夹，分类文件
     for item in os.listdir(folder_path):
@@ -109,19 +109,18 @@ def detect_folder_language(folder_path):
     if total_count == 0:
         detected_language = "en"  # 默认返回英语
     else:
-        # 筛选支持的语言并按频率排序
-        filtered_languages = [
-            lang for lang, count in language_counts.most_common() if lang in supported_languages
-        ]
-        if filtered_languages:  # 如果有支持的语言
-            detected_language = filtered_languages[0]
-        else:  # 如果没有支持的语言，默认返回英语
-            detected_language = "en"
+        # 按优先级顺序筛选语言
+        for lang in supported_languages:
+            if language_counts[lang] > 0:  # 选择权重最高的支持语言
+                detected_language = lang
+                break
+        else:
+            detected_language = "en"  # 如果没有任何支持语言，默认返回英语
 
     print(f"检测结果: {detected_language}")
     return logic_used, detected_language
 
-def process_folders(base_folders):
+def process_folders(base_folders, excluded_folders):
     """处理主文件夹中的所有子文件夹，并为每个子文件夹定性语言"""
     results = []
 
@@ -130,6 +129,12 @@ def process_folders(base_folders):
         print(f"开始处理主文件夹: {base_folder}")
         for folder_name in os.listdir(base_folder):
             folder_path = os.path.join(base_folder, folder_name)
+
+            # 检查是否是需要排除的文件夹
+            if folder_path in excluded_folders:
+                print(f"跳过文件夹: {folder_name}")
+                continue
+
             if os.path.isdir(folder_path):  # 只处理子文件夹
                 print(f"开始处理子文件夹: {folder_name}")
                 logic_used, detected_language = detect_folder_language(folder_path)
@@ -147,4 +152,19 @@ if __name__ == "__main__":
         r"D:\software\工作文件夹\代码\tiktok_crawl\下载视频",
         r"D:\software\工作文件夹\代码\instagram_crawl\下载视频2"
     ]
-    process_folders(base_folders)
+
+    # 要排除的文件夹
+    excluded_folders = [
+        r"D:\software\工作文件夹\代码\tiktok_crawl\下载视频\未审核",
+        r"D:\software\工作文件夹\代码\tiktok_crawl\下载视频\ar",
+        r"D:\software\工作文件夹\代码\tiktok_crawl\下载视频\en",
+        r"D:\software\工作文件夹\代码\tiktok_crawl\下载视频\es",
+        r"D:\software\工作文件夹\代码\tiktok_crawl\下载视频\pt",
+        r"D:\software\工作文件夹\代码\instagram_crawl\下载视频2\pt",
+        r"D:\software\工作文件夹\代码\instagram_crawl\下载视频2\未审核",
+        r"D:\software\工作文件夹\代码\instagram_crawl\下载视频2\ar",
+        r"D:\software\工作文件夹\代码\instagram_crawl\下载视频2\en",
+        r"D:\software\工作文件夹\代码\instagram_crawl\下载视频2\es"
+    ]
+
+    process_folders(base_folders, excluded_folders)

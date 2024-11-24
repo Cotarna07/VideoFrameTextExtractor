@@ -1,6 +1,0 @@
-Results for batch starting at line 1:
-Error processing this batch
-
-Results for batch starting at line 11:
-Error processing this batch
-

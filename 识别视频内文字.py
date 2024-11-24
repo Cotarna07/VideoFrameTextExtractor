@@ -100,7 +100,7 @@ def process_videos(folder_path, output_file_path, record_file_path):
             processed_videos.add(video_hash)
 
 if __name__ == '__main__':
-    folder_path = r"D:\software\工作文件夹\代码\视频文案识别\测试"
-    output_file_path = '赡养上帝.txt'
+    folder_path = r"D:\software\工作文件夹\代码\instagram_crawl\下载视频2\en\lanawaifuxoo"
+    output_file_path = '英语语测试.txt'
     record_file_path = 'tese_record.txt'
     process_videos(folder_path, output_file_path, record_file_path)
